@@ -1,20 +1,14 @@
 import cupy as cp
 import numpy as np
 import random
-import signal
 import sys
 import pandas as pd
-from pandas import ExcelWriter
-from pandas import ExcelFile
 import time
 import os
 import multiprocessing
-from functools import partial
 import warnings
-from tqdm import tqdm
 import scipy
-#import matplotlib.pyplot as plt
-#import cv2
+
 
 warnings.filterwarnings("ignore")
 
@@ -22,9 +16,6 @@ population = 100
 #gene_length = 2
 parent_size = int(population/10)
 child_size = int(population/5)
-species_threshold = 0.05
-loadStatus = 0
-thousand = 0
 learningRate = 0.01
 ##if the remainder of rand/mutation == 0 than mutation occurs 
 mutation = 2
@@ -74,13 +65,13 @@ class CCEvolvingNN(object):
         self.X = self.X.T/self.scalerx
         self.y = self.y/self.scaler
         #print(self.X)
-        print(self.X.shape[0]+1)
-        print(self.X.shape[1]+1)
+        # print(self.X.shape[0]+1)
+        # print(self.X.shape[1]+1)
         #print(self.gene_length)
         self.maxNode = int(((self.X.shape[0]+1)/(2*(self.X.shape[1]+1)))/self.gene_length)
         if(self.maxNode < 3):
             self.maxNode = 3
-        print(self.maxNode)
+        # print(self.maxNode)
     ###################################### Genetic Algorithm ######################################
     def spawn(self):
         for i in range(population):
@@ -89,7 +80,7 @@ class CCEvolvingNN(object):
             for j in range(self.gene_length):
                 self.creature[i][j] = random.randint(2, self.maxNode)
         try:
-            creature[1] = np.loadtxt('structure.txt', dtype=int)
+            self.creature[1] = np.loadtxt('structure.txt', dtype=int)
         except:
             pass
     def saveSynGA(self):
@@ -190,8 +181,7 @@ class CCEvolvingNN(object):
         #print("________________________________________________________________________________\n")
         #print(self.sorted_index)
         #print("________________________________________________________________________________\n")
-        #self.saveSynGA()
-        
+        #self.saveSynGA()  
     def newGen(self):
         self.maxNode = int(((self.X.shape[0]+1)/(2*(self.X.shape[1]+1)))/self.gene_length)
         if(self.maxNode < 3):
@@ -236,10 +226,10 @@ class CCEvolvingNN(object):
         elif loop == "S":
             #print ("Output:")
             #print (self.think()[4]*self.scaler)
-            print (self.think(self.X)[self.gene_length + 1]*self.scaler)
-            print (cp.mean(self.think(self.X)[self.gene_length + 1]*self.scaler))
-            print ("Mean Absolute Error: " + str(cp.mean(cp.abs(cp.asarray(self.y)*self.scaler) - self.think(self.X)[self.gene_length + 1]*self.scaler)))
-            print ("stuff: "+ str(self.think(self.X)[self.gene_length + 1]*self.scaler))
+            # print (self.think(self.X)[self.gene_length + 1]*self.scaler)
+            # print (cp.mean(self.think(self.X)[self.gene_length + 1]*self.scaler))
+            # print ("stuff: "+ str(self.think(self.X)[self.gene_length + 1]*self.scaler))
+            print ("Mean Absolute Error: " + str(cp.mean(cp.abs(cp.asarray(self.y)*self.scaler) - self.think(self.X)[self.gene_length + 1]*self.scaler))+"\t\t\r")
             return cp.mean(cp.abs(cp.asarray(self.y)*self.scaler) - self.think(self.X)[self.gene_length + 1]*self.scaler)
             
     ###################################### Genetic Algorithm ######################################
@@ -272,12 +262,13 @@ class CCEvolvingNN(object):
             #print(str(self.syn3))
             cp.set_printoptions(threshold=cp.inf)
             try:
-                print(str(self.syn0) + "\n\n\n")
-                print(str(self.syn1) + "\n\n\n")
-                print(str(self.syn2) + "\n\n\n")
-                print(str(self.syn3) + "\n\n\n")
-                print(str(self.syn4) + "\n\n\n")
-                print(str(self.syn5) + "\n\n\n")
+                print("\n")
+                # print(str(self.syn0) + "\n\n\n")
+                # print(str(self.syn1) + "\n\n\n")
+                # print(str(self.syn2) + "\n\n\n")
+                # print(str(self.syn3) + "\n\n\n")
+                # print(str(self.syn4) + "\n\n\n")
+                # print(str(self.syn5) + "\n\n\n")
             except:
                 pass
         except:
@@ -536,10 +527,7 @@ class CCEvolvingNN(object):
             userin = cp.empty((1,self.input_size-1),float)
             for i in range(self.input_size-1):
                 userin[0][i] = float(input(str(self.column_names[i]) +": "))
-            
-                
             l0 = userin/self.scalerx
-            l0 = cp.asarray(userin/self.scalerx)
             layers.append(l0)
             l1 = nonlin(cp.dot(l0,self.syn0))
             layers.append(l1)
@@ -556,5 +544,5 @@ class CCEvolvingNN(object):
                     if 'self.syn5' in locals():
                         l6 = nonlin(cp.dot(l5,self.syn5))
                         layers.append(l6)
-                    
-            print ("Calculated: " + str(cp.asarray(self.y)*self.scaler) - self.think(userin)[self.gene_length + 1]*self.scaler)
+            
+            print ("Calculated: " + str(layers[len(layers) -1]*self.scaler))

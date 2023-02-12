@@ -1,23 +1,33 @@
 from asyncio.windows_events import NULL
+import sys
 from EvolvingNN import EvolvingNN
+from CCEvolvingNN import CCEvolvingNN
 import signal
 import numpy as np
 import time
 from functools import partial
-import turtle
 import wmi
+import ctypes
 def exit(signum, frame):
     NN.exit(loop)
 def startProgram():
-    list = ['Width','Offset','Box']
-    NN = EvolvingNN('file.xlsx',list)
-    #list = ['Experience_level','employment_type','remote_ratio','company_size','salary_in_usd']
-    #NN = CCEvolvingNN('ds_salaries.xlsx',list)
+    #list = ['Width','Offset','Box']
+    #NN = CCEvolvingNN('file.xlsx',list)
+    list = ['Experience_level','employment_type','remote_ratio','company_size','salary_in_usd']
+    NN = CCEvolvingNN('ds_salaries.xlsx',list)
     return NN
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
 if __name__ == "__main__":
-    best = 999999999999
+    
+    if not is_admin():
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+    best = 9223372036854775807
     while True:
-        loop = EvolvingNN.Menu()
+        loop = CCEvolvingNN.Menu()
         signal.signal(signal.SIGINT, exit)
         while True:
             if loop == "S":
@@ -73,19 +83,19 @@ if __name__ == "__main__":
                 NN.spawn()
                 for i in range(gens):
                     #start_time = time.time()e
-                    print("Generation: " + str(i))
-                    # Eefunc = partial(NN.multiTest,depth)
-                    NN.test(depth)
+                    print("Generation: " + str(i) +"                                                            ")
+                    Eefunc = partial(NN.multiTest,depth)
+                    NN.test(depth,Eefunc)
                     NN.newGen()
                     NN.output(loop)
                     #print(str(time.time() - start_time))
-                    if(i%4 == 0):
-                        for j in range(10):
-                            w = wmi.WMI(namespace="root\wmi")
-                            temperature_info = w.MSAcpi_ThermalZoneTemperature()[0]
-                            print (temperature_info.CurrentTemperature)
-                            print("Cooling CPU for " +str(10-j)+" seconds", end='\r')
-                            time.sleep(1)
+                    # if(i%4 == 0):
+                    #     for j in range(0):
+                    #         w = wmi.WMI(namespace="root\wmi")
+                    #         temperature_info = w.MSAcpi_ThermalZoneTemperature()[0]
+                    #         temp = temperature_info.CurrentTemperature
+                    #         print("Cooling CPU for " +str(10-j)+" seconds temp = " + str(temp) + "                                        ", end='\r')
+                    #         time.sleep(1)
                 loop = "S"
             elif loop == "A":
                 NN = startProgram()
