@@ -4,9 +4,7 @@ from EvolvingNN import EvolvingNN
 from CCEvolvingNN import CCEvolvingNN
 import signal
 import numpy as np
-import time
 from functools import partial
-import wmi
 import ctypes
 def exit(signum, frame):
     NN.exit(loop)

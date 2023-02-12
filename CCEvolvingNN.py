@@ -229,7 +229,7 @@ class CCEvolvingNN(object):
             # print (self.think(self.X)[self.gene_length + 1]*self.scaler)
             # print (cp.mean(self.think(self.X)[self.gene_length + 1]*self.scaler))
             # print ("stuff: "+ str(self.think(self.X)[self.gene_length + 1]*self.scaler))
-            print ("Mean Absolute Error: " + str(cp.mean(cp.abs(cp.asarray(self.y)*self.scaler) - self.think(self.X)[self.gene_length + 1]*self.scaler))+"\t\t\r")
+            print ("Mean Error: " + str(cp.mean(cp.abs(cp.asarray(self.y)*self.scaler) - self.think(self.X)[self.gene_length + 1]*self.scaler))+"\t\t\r")
             return cp.mean(cp.abs(cp.asarray(self.y)*self.scaler) - self.think(self.X)[self.gene_length + 1]*self.scaler)
             
     ###################################### Genetic Algorithm ######################################
@@ -419,11 +419,11 @@ class CCEvolvingNN(object):
         cp.savetxt('syn0.txt', self.syn0, fmt='%1.8f')
         cp.savetxt('syn1.txt', self.syn1, fmt='%1.8f')
         cp.savetxt('syn2.txt', self.syn2, fmt='%1.8f')
-        if 'self.syn3' in locals():
+        if self.gene_length >2:
             cp.savetxt('syn3.txt', self.syn3, fmt='%1.8f')
-            if 'self.syn4' in locals():
+            if self.gene_length >3:
                 cp.savetxt('syn4.txt', self.syn4, fmt='%1.8f')
-                if 'self.syn5' in locals():
+                if self.gene_length >4:
                     cp.savetxt('syn5.txt', self.syn5, fmt='%1.8f')
     def saveStructure(self):
         try:
@@ -477,13 +477,13 @@ class CCEvolvingNN(object):
                     layers.append(l2)
                     l3 = nonlin(cp.dot(l2,self.syn2))
                     layers.append(l3)
-                    if 'self.syn3' in locals():
+                    if c!=-1:
                         l4 = nonlin(cp.dot(l3,self.syn3))
                         layers.append(l4)
-                        if 'self.syn4' in locals():
+                        if d!=-1:
                             l5 = nonlin(cp.dot(l4,self.syn4))
                             layers.append(l5)
-                            if 'self.syn5' in locals():
+                            if e!=-1:
                                 l6 = nonlin(cp.dot(l5,self.syn5))
                                 layers.append(l6)
                     
@@ -535,14 +535,14 @@ class CCEvolvingNN(object):
             layers.append(l2)
             l3 = nonlin(cp.dot(l2,self.syn2))
             layers.append(l3)
-            if 'self.syn3' in locals():
-                l4 = nonlin(cp.dot(l3,self.syn3))
-                layers.append(l4)
-                if 'self.syn4' in locals():
-                    l5 = nonlin(cp.dot(l4,self.syn4))
-                    layers.append(l5)
-                    if 'self.syn5' in locals():
-                        l6 = nonlin(cp.dot(l5,self.syn5))
-                        layers.append(l6)
+            if c!=-1:
+               l4 = nonlin(cp.dot(l3,self.syn3))
+               layers.append(l4)
+               if d!=-1:
+                   l5 = nonlin(cp.dot(l4,self.syn4))
+                   layers.append(l5)
+                   if e!=-1:
+                       l6 = nonlin(cp.dot(l5,self.syn5))
+                       layers.append(l6)
             
             print ("Calculated: " + str(layers[len(layers) -1]*self.scaler))
