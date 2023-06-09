@@ -1,3 +1,5 @@
+
+
 # EvolvingNeuralNet
 
 A Python based implementation of a Neural Network (NN) optimized by a Genetic Algorithm (GA).
@@ -13,9 +15,11 @@ This project is written in Python, and it requires the following Python librarie
  - Cupy (for GPU computations)
 
 You can install these packages via pip:
+
     pip install numpy pandas cupy
 
-Usage
+## Usage
+
 After cloning the repository and installing dependencies, you can run the main script by the following command:
 
     python main.py
